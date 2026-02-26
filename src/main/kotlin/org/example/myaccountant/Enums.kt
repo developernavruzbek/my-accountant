@@ -15,6 +15,7 @@ enum class ErrorCodes(val code: Long) {
 
     CATEGORY_ALREADY_EXISTS(203),
     CATEGORY_NOT_FOUND(204),
+    CATEGORY_NAME_ALREADY_EXISTS(205),
 
 
 }

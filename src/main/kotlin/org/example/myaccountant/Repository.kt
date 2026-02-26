@@ -59,3 +59,7 @@ interface UserRepository:BaseRepository<User> {
 
 }
 
+@Repository
+interface CategoryRepository: BaseRepository<Category>{
+    fun findByName(name: String): Category?
+}

@@ -66,3 +66,9 @@ class CategoryAlreadyExistsException(): DemoExceptionHandler(){
     override fun errorCode() = ErrorCodes.CATEGORY_ALREADY_EXISTS
 
 }
+
+
+class CategoryNameAlreadyExistsException(): DemoExceptionHandler(){
+    override fun errorCode() = ErrorCodes.CATEGORY_NAME_ALREADY_EXISTS
+
+}

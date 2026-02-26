@@ -96,6 +96,10 @@ class UserServiceImpl(
         body.role?.let {
             user.role = it }
 
+        body.age?.let {
+            user.age = it
+        }
+
         val updated = userRepository.save(user)
         return mapper.toDto(updated)
     }
@@ -108,6 +112,66 @@ class UserServiceImpl(
 
 }
 
+
+interface CategoryService{
+    fun create(categoryCreateRequest: CategoryCreateRequest)
+    fun getOne(id: Long): CategoryResponse
+    fun getAll(): List<CategoryResponse>
+    fun update(id:Long, categoryUpdateRequest: CategoryUpdateRequest)
+    fun delete(id: Long)
+}
+
+
+@Service
+class CategoryServiceImpl(
+    private val categoryRepository: CategoryRepository,
+    private val categoryMapper: CategoryMapper
+): CategoryService {
+
+    @Transactional
+    override fun create(categoryCreateRequest: CategoryCreateRequest) {
+        categoryRepository.findByName(categoryCreateRequest.name)?.let {
+            throw CategoryAlreadyExistsException()
+        }
+        categoryRepository.save(categoryMapper.toEntity(categoryCreateRequest))
+
+    }
+
+    override fun getOne(id: Long): CategoryResponse {
+        val category = categoryRepository.findByIdAndDeletedFalse(id)
+            ?:throw CategoryNotFoundException()
+        return categoryMapper.toDto(category)
+    }
+
+    override fun getAll(): List<CategoryResponse> {
+        return categoryRepository.findAll().map { category->
+            categoryMapper.toDto(category)
+        }
+    }
+
+    override fun update(id: Long, categoryUpdateRequest: CategoryUpdateRequest) {
+        categoryRepository.findByIdAndDeletedFalse(id)?.let { category ->
+            categoryUpdateRequest.name?.let {
+                categoryRepository.findByName(it)?.let {
+                    if (it.id!=category.id)
+                        throw CategoryNameAlreadyExistsException()
+                }
+                category.name = it
+            }
+            categoryUpdateRequest.description?.let {
+                category.description =it
+            }
+
+         categoryRepository.save(category)
+        }?:throw CategoryNotFoundException()
+    }
+
+    override fun delete(id: Long) {
+       categoryRepository.findByIdAndDeletedFalse(id)?.let {
+           categoryRepository.trash(id)
+       }?:throw CategoryNotFoundException()
+    }
+}
 
 @Service
 class CustomUserDetailsService(

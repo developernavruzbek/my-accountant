@@ -31,6 +31,24 @@ class UserMapper(
         )
     }
 
+}
 
+@Component
+class CategoryMapper{
+    fun toEntity(categoryCreateRequest: CategoryCreateRequest): Category{
+        return Category(
+            name = categoryCreateRequest.name,
+            description = categoryCreateRequest.description
+        )
+    }
+
+    fun toDto(category: Category): CategoryResponse{
+        return CategoryResponse(
+            id = category.id,
+            name = category.name,
+            description = category.description,
+            createdDate = category.createdDate!!
+        )
+    }
 }
 
