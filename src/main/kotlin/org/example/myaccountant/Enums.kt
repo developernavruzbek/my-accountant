@@ -1,7 +1,7 @@
 package org.example.myaccountant
 
 enum class UserRole{
-    ADMIN, EMPLOYEE
+    ADMIN, USER
 }
 
 enum class ErrorCodes(val code: Long) {
@@ -11,7 +11,10 @@ enum class ErrorCodes(val code: Long) {
     USER_ALREADY_EXISTS(105),
     PASSWORD_IS_INCORRECT(106),
     NOT_LOGGED_IN_EXCEPTION(107),
-    PHONE_NUMBER_ALREADY_EXISTS(202),
+    PHONE_NUMBER_ALREADY_EXISTS(108),
+
+    CATEGORY_ALREADY_EXISTS(203),
+    CATEGORY_NOT_FOUND(204),
 
 
 }

@@ -45,6 +45,6 @@ class User(
     @Column(nullable = false, unique = true) var phone:String,
     var password:String,
     @Column(nullable = false)var age : Long,
-    @Enumerated(value = EnumType.STRING) var role: UserRole = UserRole.EMPLOYEE
+    @Enumerated(value = EnumType.STRING) var role: UserRole = UserRole.USER
 ): BaseEntity()
 

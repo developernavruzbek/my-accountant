@@ -57,3 +57,12 @@ class PasswordIsIncorrect: DemoExceptionHandler(){
     override fun errorCode() = ErrorCodes.PASSWORD_IS_INCORRECT
 }
 
+
+class CategoryNotFoundException(): DemoExceptionHandler() {
+    override fun errorCode() = ErrorCodes.CATEGORY_NOT_FOUND
+}
+
+class CategoryAlreadyExistsException(): DemoExceptionHandler(){
+    override fun errorCode() = ErrorCodes.CATEGORY_ALREADY_EXISTS
+
+}

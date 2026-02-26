@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.io.FileInputStream
+import java.util.Date
 import kotlin.collections.toList
 import kotlin.sequences.forEach
 import kotlin.text.toRegex
@@ -67,3 +68,21 @@ data class UserDetailsResponse(
 
 data class LoginRequest(val phone: String, val password: String)
 data class JwtResponse(val token: String)
+
+
+data class CategoryCreateRequest(
+    val name:String,
+    val description:String
+)
+
+data class CategoryUpdateRequest(
+    val name:String?,
+    val description:String?
+)
+
+data class CategoryResponse(
+    val id:Long?,
+    val name:String,
+    val description: String,
+    val createdDate : Date
+)

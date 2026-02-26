@@ -31,35 +31,6 @@ class UserMapper(
         )
     }
 
-    /*
-    fun toDto(user: User): UserResponse{
-        user.run {
-            return UserResponse(
-                id = id,
-                firstName = firstName,
-                role = role,
-                status = status
-            )
-        }
-    }
-
-    fun toDtoFull(user: User): UserFullResponse{
-        user.run {
-            return UserFullResponse(
-                id = id,
-                firstName = firstName,
-                lastName = lastName,
-                phone = phone,
-                role  = role,
-                wareHouseId = wareHouse.id,
-                wareHouseName = wareHouse.name,
-                status = status
-            )
-        }
-    }
-
-     */
-
 
 }
 
