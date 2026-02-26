@@ -19,6 +19,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.math.BigDecimal
 import java.util.Date
 
 @MappedSuperclass
@@ -46,5 +47,15 @@ class User(
     var password:String,
     @Column(nullable = false)var age : Long,
     @Enumerated(value = EnumType.STRING) var role: UserRole = UserRole.USER
+): BaseEntity()
+
+@Entity
+class Expenses(
+    @Column(nullable = false) var title:String,
+    @Column(nullable = false, precision = 18, scale = 2)var amount: BigDecimal = BigDecimal.ZERO,
+    @ManyToOne val user: User,
+    @ManyToOne var category: Category,
+    var description:String,
+    var date:Date
 ): BaseEntity()
 

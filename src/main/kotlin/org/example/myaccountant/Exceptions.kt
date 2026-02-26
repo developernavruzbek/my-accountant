@@ -72,3 +72,18 @@ class CategoryNameAlreadyExistsException(): DemoExceptionHandler(){
     override fun errorCode() = ErrorCodes.CATEGORY_NAME_ALREADY_EXISTS
 
 }
+
+class FutureDateNotAllowedException : DemoExceptionHandler() {
+    override fun errorCode() = ErrorCodes.FUTURE_DATE_NOT_ALLOWED
+}
+class ExpensesNotFoundException: DemoExceptionHandler() {
+    override fun errorCode() = ErrorCodes.EXPENSES_NOT_FOUND
+}
+
+class InvalidAmountException : DemoExceptionHandler() {
+    override fun errorCode() = ErrorCodes.INVALID_AMOUNT
+}
+
+class NotLoggedInException: DemoExceptionHandler() {
+    override fun errorCode() = ErrorCodes.NOT_LOGGED_IN_EXCEPTION
+}

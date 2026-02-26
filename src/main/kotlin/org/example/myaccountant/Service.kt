@@ -1,11 +1,14 @@
 package org.example.myaccountant
 
 import org.example.myaccountant.security.JwtService
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
+import java.util.Date
 import kotlin.collections.map
 import kotlin.let
 import kotlin.run
@@ -173,6 +176,90 @@ class CategoryServiceImpl(
     }
 }
 
+interface ExpensesService{
+    fun create(expensesCreateRequest: ExpensesCreateRequest)
+    fun getOne(id:Long): ExpensesResponse
+    fun getAll(): List<ExpensesResponse>
+    fun update(id:Long, expensesUpdateRequest: ExpensesUpdateRequest)
+    fun delete(id:Long)
+}
+
+@Service
+class ExpensesServiceImpl(
+    private val expensesRepository: ExpensesRepository,
+    private val expensesMapper: ExpensesMapper,
+    private val categoryRepository: CategoryRepository,
+    private val userRepository: UserRepository
+): ExpensesService {
+
+    @Transactional
+    override fun create(expensesCreateRequest: ExpensesCreateRequest) {
+        val category = categoryRepository.findByIdAndDeletedFalse(expensesCreateRequest.categoryId)
+            ?:throw CategoryNotFoundException()
+        val now  = Date()
+        if (expensesCreateRequest.date>now.time)
+            throw FutureDateNotAllowedException()
+
+        if (expensesCreateRequest.amount<= BigDecimal.ZERO)
+            throw InvalidAmountException()
+
+        val date  = Date(expensesCreateRequest.date)
+        expensesRepository.save(expensesMapper.toEntity(expensesCreateRequest, date, category, getCurrentUser(userRepository)))
+
+    }
+
+    override fun getOne(id: Long): ExpensesResponse {
+        val expenses = expensesRepository.findByIdAndDeletedFalse(id)
+            ?:throw ExpensesNotFoundException()
+        return expensesMapper.toDto(expenses, expenses.date.time)
+    }
+
+    override fun getAll(): List<ExpensesResponse> {
+        val expenses = expensesRepository.findAll()
+      return expenses.map { expense->
+            expensesMapper.toDto(expense, expense.date.time)
+        }
+    }
+
+    @Transactional
+    override fun update(id: Long, expensesUpdateRequest: ExpensesUpdateRequest) {
+        val expenses = expensesRepository.findByIdAndDeletedFalse(id)
+            ?:throw ExpensesNotFoundException()
+        val now  = Date()
+        expensesUpdateRequest.run {
+            title?.let {
+                expenses.title = it
+            }
+            amount?.let {
+                if (it<= BigDecimal.ZERO)
+                    throw InvalidAmountException()
+                expenses.amount = it
+            }
+            categoryId?.let {
+                val category = categoryRepository.findByIdAndDeletedFalse(it)
+                    ?:throw CategoryNotFoundException()
+                expenses.category =category
+            }
+            description?.let {
+                expenses.description = it
+            }
+            date?.let {
+                if (it>now.time)
+                    throw FutureDateNotAllowedException()
+                expenses.date = Date(it)
+            }
+        }
+
+        expensesRepository.save(expenses)
+
+    }
+
+    override fun delete(id: Long) {
+        expensesRepository.trash(id)
+            ?:throw ExpensesNotFoundException()
+    }
+}
+
 @Service
 class CustomUserDetailsService(
     private val repository: UserRepository
@@ -189,4 +276,16 @@ class CustomUserDetailsService(
             )
         } ?: throw UserNotFoundException()
     }
+}
+
+
+fun getCurrentUser(userRepository: UserRepository): User {
+    val auth = SecurityContextHolder.getContext().authentication
+    if (auth == null || !auth.isAuthenticated) {
+        throw NotLoggedInException()
+    }
+
+    val userDetails = auth.principal as UserDetails
+    return userRepository.findByPhone(userDetails.username)
+        ?: throw UserNotFoundException()
 }

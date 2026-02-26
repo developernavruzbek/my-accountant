@@ -2,7 +2,7 @@ package org.example.myaccountant
 
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
-import kotlin.collections.map
+import java.util.Date
 import kotlin.run
 
 @Component
@@ -49,6 +49,36 @@ class CategoryMapper{
             description = category.description,
             createdDate = category.createdDate!!
         )
+    }
+}
+
+
+@Component
+class ExpensesMapper {
+    fun toEntity(expensesRequest: ExpensesCreateRequest, date : Date, category: Category, user:User): Expenses{
+         return Expenses(
+             title = expensesRequest.title,
+             amount = expensesRequest.amount,
+             category = category,
+             description = expensesRequest.description,
+             date = date,
+             user  = user
+         )
+    }
+
+
+    fun toDto(expenses: Expenses, date:Long): ExpensesResponse{
+
+        return ExpensesResponse(
+            id = expenses.id!!,
+            title = expenses.title,
+            amount = expenses.amount,
+            categoryId = expenses.category.id!!,
+            categoryName = expenses.category.name,
+            description = expenses.description,
+            date = date
+        )
+
     }
 }
 

@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.io.FileInputStream
+import java.math.BigDecimal
 import java.util.Date
 import kotlin.collections.toList
 import kotlin.sequences.forEach
@@ -85,4 +86,30 @@ data class CategoryResponse(
     val name:String,
     val description: String,
     val createdDate : Date?
+)
+
+data class ExpensesCreateRequest(
+    val title: String,
+    val amount: BigDecimal,
+    val categoryId: Long,
+    val description: String,
+    val date: Long
+)
+
+data class ExpensesUpdateRequest(
+    val title: String? = null,
+    val amount: BigDecimal? = null,
+    val categoryId: Long? = null,
+    val description: String? = null,
+    val date: Long? = null
+)
+
+data class ExpensesResponse(
+    val id: Long,
+    val title: String,
+    val amount: BigDecimal,
+    val categoryId:Long,
+    val categoryName: String,
+    val description: String,
+    val date: Long
 )

@@ -75,3 +75,25 @@ class CategoryController(
     @DeleteMapping("/{categoryId}")
     fun delete(@PathVariable categoryId:Long) = categoryService.delete(categoryId)
 }
+
+@RestController
+@RequestMapping("/expenses")
+class ExpensesController(
+    private val expensesService: ExpensesService
+){
+    @GetMapping
+    fun getAll() = expensesService.getAll()
+
+    @PostMapping
+    fun create(@RequestBody expensesCreateRequest: ExpensesCreateRequest)  = expensesService.create(expensesCreateRequest)
+
+    @GetMapping("/{id}")
+    fun getOne(@PathVariable id:Long) = expensesService.getOne(id)
+
+    @PutMapping("/{id}")
+    fun update(@PathVariable id:Long, @RequestBody expensesUpdateRequest: ExpensesUpdateRequest) = expensesService.update(id, expensesUpdateRequest)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id:Long) = expensesService.delete(id)
+
+}
