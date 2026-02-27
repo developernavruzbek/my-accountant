@@ -85,7 +85,6 @@ data class CategoryResponse(
     val id:Long?,
     val name:String,
     val description: String,
-    val createdDate : Date?
 )
 
 data class ExpensesCreateRequest(
@@ -112,4 +111,29 @@ data class ExpensesResponse(
     val categoryName: String,
     val description: String,
     val date: Long
+)
+
+
+data class IntervalStatsResponse(
+    val currentStart: Long,
+    val currentEnd: Long,
+
+    val previousStart: Long,
+    val previousEnd: Long,
+
+    val totalAmount: BigDecimal,
+    val previousTotalAmount: BigDecimal,
+    val difference: BigDecimal,
+
+    val categories: List<CategoryStatResponse>
+)
+
+data class CategoryStatResponse(
+    val name: String,
+    val total: BigDecimal
+)
+
+data class StatisticsRequest(
+    val start:Long,
+    val end:Long
 )

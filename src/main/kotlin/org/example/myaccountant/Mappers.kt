@@ -47,7 +47,6 @@ class CategoryMapper{
             id = category.id,
             name = category.name,
             description = category.description,
-            createdDate = category.createdDate!!
         )
     }
 }

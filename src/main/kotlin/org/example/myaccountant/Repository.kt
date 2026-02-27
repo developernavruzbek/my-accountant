@@ -7,11 +7,14 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 import org.springframework.data.repository.NoRepositoryBean
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.util.Date
 import kotlin.apply
 import kotlin.collections.map
 import kotlin.run
@@ -65,5 +68,33 @@ interface CategoryRepository: BaseRepository<Category>{
 }
 
 @Repository
-interface ExpensesRepository: BaseRepository<Expenses>{
+interface ExpensesRepository: BaseRepository<Expenses> {
+
+    @Query("""
+        SELECT e FROM Expenses e 
+        WHERE e.deleted = false 
+          AND e.user.id = :userId 
+          AND e.date BETWEEN :start AND :end
+    """)
+    fun findByDateRange(
+        @Param("userId") userId: Long,
+        @Param("start") start: Date,
+        @Param("end") end: Date
+    ): List<Expenses>
+
+    @Query("""
+        SELECT e.category.name, SUM(e.amount) 
+        FROM Expenses e
+        WHERE e.deleted = false 
+          AND e.user.id = :userId 
+          AND e.date BETWEEN :start AND :end
+        GROUP BY e.category.name
+    """)
+    fun sumByCategory(
+        @Param("userId") userId: Long,
+        @Param("start") start: Date,
+        @Param("end") end: Date
+    ): List<Array<Any>>
+
+    fun findAllByUser(user: User): List<Expenses>
 }

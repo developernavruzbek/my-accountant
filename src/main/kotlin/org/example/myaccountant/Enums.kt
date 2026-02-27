@@ -21,3 +21,7 @@ enum class ErrorCodes(val code: Long) {
     INVALID_AMOUNT(402)
 }
 
+enum class PeriodType {
+    WEEK, MONTH, YEAR, CUSTOM
+}
+

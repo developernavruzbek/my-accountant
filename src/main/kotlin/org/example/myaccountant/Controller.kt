@@ -1,6 +1,7 @@
 package org.example.myaccountant
 
 
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
@@ -57,6 +58,7 @@ class UserController(
 
 @RestController
 @RequestMapping("/category")
+@PreAuthorize("hasAuthority('ADMIN')")
 class CategoryController(
     private val categoryService: CategoryService
 ){
@@ -96,4 +98,43 @@ class ExpensesController(
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id:Long) = expensesService.delete(id)
 
+    @GetMapping("/me")
+    fun getAllUser() =  expensesService.findAllUser()
+
+}
+
+
+@RestController
+@RequestMapping("statistics")
+class StatisticsController(
+    private val statisticsService: StatisticsService
+) {
+
+    @PostMapping()
+    fun getIntervalStatistics(@RequestBody request: StatisticsRequest)=  statisticsService.statistics(request)
+}
+
+@RestController
+@RequestMapping("/export")
+class StatisticsExportController(
+    private val statisticsExportService: StatisticsExportService
+) {
+
+    @PostMapping
+    fun exportStatisticsToExcel(
+        @RequestBody request: StatisticsRequest,
+        response: HttpServletResponse
+    ) {
+        val excelBytes = statisticsExportService.exportToExcel(request)
+
+        response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response.setHeader(
+            "Content-Disposition",
+            "attachment; filename=\"statistics.xlsx\""
+        )
+        response.outputStream.use { output ->
+            output.write(excelBytes)
+            output.flush()
+        }
+    }
 }
