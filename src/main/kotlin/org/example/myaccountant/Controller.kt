@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*
 class AuthController(
     private val userService: UserService
 ) {
-    @PostMapping("/register")
-    fun create(@RequestBody request: UserCreateRequest) = userService.create(request)
 
     @PostMapping("/login")
     fun login(@RequestBody req: LoginRequest): JwtResponse {
@@ -34,6 +32,8 @@ class UserController(
         return userService.getAll()
     }
 
+    @PostMapping("/register")
+    fun create(@RequestBody request: UserCreateRequest) = userService.create(request)
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): UserResponse {

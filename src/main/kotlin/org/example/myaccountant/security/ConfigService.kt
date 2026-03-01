@@ -27,6 +27,7 @@ class ConfigService(
                 it
                     .requestMatchers(
                         "/auth/**",
+                        "/auth/*",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-ui.html"
